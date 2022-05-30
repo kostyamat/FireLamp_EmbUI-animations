@@ -1,0 +1,67 @@
+# Line Bounce in Jinx!Script
+# (c) 2015 Bob Kojima
+# bob.k.kojima@gmail.com
+
+:init
+
+	config stp = 2
+	config rectangle = 0
+	config angle = 30
+	config hsl_color = 1
+	config pause = 1
+	
+	h = matrix_y / 3
+	w = stp - 2
+	
+	for i = 1 to matrix_x step stp
+		hue[i] = 360 / matrix_x * i
+	next
+	
+	time = 0
+	
+	d = 1
+end
+
+:render
+
+	# black out screen 
+	clear
+   
+  for i = 1 to matrix_x step stp
+  	r = autocolor_red
+		g = autocolor_green
+		b = autocolor_blue
+		
+		if hsl_color = 1
+			hsl2rgb hue[i], 255, 150, r, g, b		
+		endif
+  
+  	if time = pause
+  		hue[i] = hue[i] + 20
+			if hue[i] > 360 
+				hue[i] = 0
+			endif
+  	endif
+  
+		angle_incr = 3.14 * angle * i + d
+		y[i] = h + sin(angle_incr) * 15
+		
+		if rectangle
+			rect i, y[i], i + w, y[i] + h, r, g, b, 1
+		else
+			line i, y[i], i, y[i] + h, r, g, b
+		endif
+	next
+		
+	if time = pause
+  	d = d + 1
+		if d > matrix_x / stp
+			d = 1
+		endif
+					
+		time = 0
+ 	else
+ 		time = time + 1
+  endif
+
+end

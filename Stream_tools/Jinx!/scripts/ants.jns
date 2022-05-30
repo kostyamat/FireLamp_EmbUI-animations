@@ -1,0 +1,46 @@
+# Ants Jinx!Script
+# (c) 2015 Silas Zimmermann
+
+:init
+	config fade_amount = 50
+	
+	config count = 10
+
+	config walk_diagonal = 0
+
+	for i=0 to count-1
+		px[i] = rnd(matrix_x-1)
+		py[i] = rnd(matrix_y-1)
+	next	
+
+end
+
+:render
+	fade fade_amount
+	for nr=0 to count-1
+		if walk_diagonal = 0
+			if rnd(1) = 0
+				px[nr] = px[nr]+rnd(1)*2-1
+			else
+				py[nr] = py[nr]+rnd(1)*2-1
+			endif
+		else
+			px[nr] = px[nr]+rnd(2)-1
+			py[nr] = py[nr]+rnd(2)-1
+		endif
+		if px[nr] >= matrix_x
+			px[nr] = matrix_x-1
+		endif
+		if py[nr] >= matrix_y
+			py[nr] = matrix_y-1
+		endif
+		if px[nr] < 0
+			px[nr] = 0
+		endif
+		if py[nr] < 0
+			py[nr] = 0
+		endif
+		pset px[nr], py[nr], autocolor_red, autocolor_green, autocolor_blue
+	next
+
+end

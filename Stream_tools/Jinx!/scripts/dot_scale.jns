@@ -1,0 +1,66 @@
+# Dot Scale in Jinx!Script
+# (c) 2015 Bob Kojima
+# bob.k.kojima@gmail.com
+
+
+# initialize
+:init
+	speed = 5
+	
+	config dot_count_x = 12
+	config dot_count_y = 3
+	config raduis_scale = 1
+	
+  dx = 0
+  dy = 0
+  mx = 0
+  my = 0
+  hue = 0
+  
+  w = matrix_x
+	h = matrix_y
+	
+  xstep = w / dot_count_x
+	ystep = h / dot_count_y
+	
+	if xstep > ystep
+		rd = xstep * raduis_scale
+	else
+		rd = ystep * raduis_scale
+	endif
+	
+end
+
+
+# render frame
+:render
+
+	# black out screen
+	clear
+	
+	dx = dx + 11 * speed
+  dy = dy + 7 * speed
+    
+  mx = ( cos(dx / 243) + cos(dy / 253) ) * (matrix_x / 4)
+  my = ( sin(dx / 347) + cos(dy / 363) ) * (matrix_y / 4)	
+	x1 = (matrix_x / 2) + mx
+	y1 = (matrix_y / 2) + my
+	
+  hsv2rgb hue, 255, 255, r, g, b  
+  #circle x1, y1, .5, r, g, b, 1
+	
+	for i = 1 to dot_count_y step 1
+		for j = 1 to dot_count_x step 1
+			x = j * xstep - xstep/2	
+			y = i * ystep - ystep/2	
+  
+			yd = y1 - y
+			xd = x1 - x
+			distance = sqr(xd*xd + yd*yd)
+
+			#filled circle
+    	circle x, y, distance/rd, autocolor_red, autocolor_green, autocolor_blue, 1
+		next
+	next
+
+end

@@ -1,0 +1,155 @@
+#
+#          A routine to display Red, Green and White lines by Peter Weaver.
+#          The variable "movement" can be 1, 2 or 3. The variable "white_bar"
+#          must be 1 or higher.
+#
+#          This routine set at the slowest possible setting combined with the
+#          "shape" of the scrolling text "Merry Christmas" in the font 
+#          "Bodoni MT Black" looks very good on my matrix.
+#
+ 
+# initialize
+
+:init
+ 
+#
+#          Get the sizes of the bars, the white bar has to be
+#          at least one pixel wide
+#
+
+            config red_bar=4
+            config white_bar=4
+            config green_bar=1
+
+            if white_bar <1
+                        white_bar=1
+            endif
+
+#
+#          Get the movement
+#
+
+            config movement=2   # 1=Up, 2=Down, 3=static
+
+#
+#          Get the size of the longest edge
+#
+
+            max_size=matrix_x
+
+            if matrix_y>max_size
+                        max_size=matrix_y
+            endif
+
+#
+#          There might be a formula to calculate what this should be,
+#          but 50% should cover it
+#
+
+            max_size=max_size*1.5
+
+#
+#          For tweaking the start
+#
+
+            config prev_start = 1
+
+#
+#          Counters
+#
+
+            red_count=0
+            green_count=0
+            white_count=0
+
+            i=0
+
+            total_bars=(red_bar+green_bar+white_bar)
+
+#
+#          Populate the arrays
+#
+
+            while i<(total_bars)
+
+                        if red_count<red_bar
+                                    red_count=red_count+1
+                                    red_val[i]=255
+                                    blue_val[i]=0
+                                    green_val[i]=0
+            
+                        else if green_count<green_bar
+                                    green_count=green_count+1
+                                    red_val[i]=0
+                                    blue_val[i]=0
+                                    green_val[i]=255
+ 
+                        else if white_count<white_bar
+                                    white_count=white_count+1
+                                    red_val[i]=255
+                                    blue_val[i]=255
+                                    green_val[i]=255
+                        endif
+ 
+                        i=i+1
+ 
+            wend                
+ 
+ 
+end
+ 
+ 
+# render frame
+:render
+ 
+#
+#          Change the starting position in the array based on the movement
+#
+            if movement=1 then
+                        prev_start=prev_start+1
+            endif
+ 
+            if movement=2 then
+                        prev_start=prev_start-1
+            endif
+ 
+#
+#          Not needed, but here for completeness
+#
+            if movement=3 then 
+                        prev_start=prev_start
+            endif
+ 
+#
+#          Loop the start if we have gone past the array boundries
+#
+ 
+            if prev_start>(total_bars) then
+                        prev_start=0
+            else if prev_start<0 then
+                        prev_start=total_bars
+            endif
+ 
+            pointer=prev_start
+ 
+#
+#          Walk through the array drawing lines
+#
+ 
+            i=0
+ 
+            while i<max_size
+                        if pointer>=(total_bars) then
+                                    pointer=0
+                        else if pointer<0 then
+                                    pointer=total_bars
+                        endif
+ 
+                        line i,0,0,i,red_val[pointer],green_val[pointer],blue_val[pointer]
+                        pointer = pointer+1
+                        i=i+1
+ 
+            wend
+ 
+ 
+end

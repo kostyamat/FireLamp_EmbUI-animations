@@ -1,0 +1,86 @@
+# Swirl2 in Jinx!Script
+# (c) 2015 Bob Kojima
+# bob.k.kojima@gmail.com
+
+# you need to activate the autocolor inside the Jinx!Script channel config !
+
+:init
+	config dot_count = 333
+	config hsl_color = 1
+	
+	centerx = matrix_x / 2
+	centery = matrix_y / 2
+
+	frame_number = 1
+	
+	for i = 1 to dot_count step 1				
+		redA[i] = rnd(255)
+		greenA[i] = rnd(255)
+		blueA[i] = rnd(255)
+	next
+	
+end
+
+:render
+
+	# black out screen 
+	clear
+  
+  deviation = 5 / 8.0
+  # golden ratio 
+  phi = (sqr(5) + 1) / 2 - 1 
+  # golden angle           
+  golden_angle = phi * 2 * 3.14         
+  
+  lg_rad = matrix_x * .45
+  lg_area = (lg_rad^2 )* 3.14
+  
+  mean_area = lg_area / dot_count
+  
+  min_area = mean_area * (1-deviation)
+  max_area = mean_area * (1+deviation)
+  
+  cum_area = 0
+  
+  #Fudge factor, since our circles don't actually fill up space entirely.
+  fudge = .87 	
+  
+  hue_incr = frame_number * .0002 + .1
+  angle_offset = frame_number * .01
+  
+  for i = 1 to dot_count 
+    angle = i * golden_angle + angle_offset
+  
+    ratio = i / dot_count
+    sm_area = min_area + ratio * (max_area - min_area)
+    sm_rad = sqr( sm_area / 3.14 )
+  
+    cum_area = cum_area + sm_area
+  
+    spiral_rad = sqr( cum_area / 3.14 )
+    x = centerx + cos(angle) * spiral_rad
+    y = centery + sin(angle) * spiral_rad
+    
+    red = autocolor_red
+    green = autocolor_green
+   	blue = autocolor_blue
+   	if hsl_color
+   		hue = hue_incr * i
+    	hue = hue -  floor(hue)
+    	hue = hue * 360
+   		hsl2rgb hue, 255, 150, red, green, blue 
+   	endif
+    
+    circle x, y, sm_rad * fudge, red, green, blue, 1
+  next
+  
+  frame_number = frame_number + step
+   
+	if frame_number > 360
+		step = -1
+	endif
+	if frame_number < 2
+		step = 1
+	endif
+		
+end

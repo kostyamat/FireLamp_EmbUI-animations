@@ -1,0 +1,83 @@
+# Evaperation in Jinx!Script
+# (c) 2015 Bob Kojima
+# bob.k.kojima@gmail.com
+
+:init
+
+	config dot_count = 10
+
+	config dot_raduis = 2
+	
+	config rnd_color = 1
+
+	config pause = 1
+	
+	w = matrix_x
+	h = matrix_y
+	
+	xstep = w / dot_count
+	
+	n = 1
+	
+	for j = 1 to dot_count step 1
+		#x position
+		x[n] = j * xstep - xstep/2
+		#y position
+		y[n] = h/2
+		d[n] = 0
+		n = n + 1
+	next
+	
+	time = 0
+end
+
+:render
+
+	# black out screen 
+	clear
+
+	n = rnd(dot_count)
+	
+	if d[n] = 0
+		d[n] = 1
+		r[n] = autocolor_red
+		g[n] = autocolor_green
+		b[n] = autocolor_blue
+			
+		if rnd_color = 1
+			r[n] = rnd(255)
+			g[n] = rnd(255)
+			b[n] = rnd(255)
+		endif
+		
+	endif
+	 
+	for i = 1 to dot_count step 1
+  
+		#filled circle
+		circle x[i], y[i], dot_raduis, r[i], g[i], b[i], 1
+    
+		#upper circle   
+		circle x[i], y[i] - d[i], dot_raduis, r[i] - d[i]*10, g[i] - d[i]*10, b[i] - d[i]*10, 1
+		
+		#lower circle   
+		circle x[i], y[i] + d[i], dot_raduis, r[i] - d[i]*10, g[i] - d[i]*10, b[i] - d[i]*10, 1
+			
+		if time = pause
+	  		if d[i] > 0
+  				d[i] = d[i] + 1
+  			endif	
+	  	endif
+  		  	
+		if d[i] >  h/3
+			d[i] = 0
+		endif
+  	next
+ 	
+		if time = pause
+			time = 0
+ 		else
+ 			time = time + 1
+  	endif
+
+end

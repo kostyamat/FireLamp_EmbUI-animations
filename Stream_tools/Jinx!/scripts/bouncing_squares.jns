@@ -1,0 +1,59 @@
+# Bouncing Squares in Jinx!Script
+# (c) 2015 Bob Kojima
+# bob.k.kojima@gmail.com
+
+# initialize
+:init
+	
+	config squares = 10
+	config size = 10
+	
+	sizel = size
+	sizet = size - 1
+	for n = 1 to squares step 1
+		x_pos[n] = rnd(matrix_x - sizel)
+		y_pos[n] = rnd(matrix_y - sizet)
+				
+		red[n] = rnd(255)
+		green[n] = rnd(255)
+		blue[n] = rnd(255)
+
+  		l[n] = 1 + rnd(3)
+  		t[n] = 1 + rnd(3)
+	next
+
+end
+
+
+# render frame
+:render
+
+	# black out screen 
+	clear
+
+	for n = 1 to squares step 1
+		#random number between 1 and 3
+		rInt = 1 + rnd(3)
+  	
+  		#move the square
+		x_pos[n] = x_pos[n] + l[n] 
+		y_pos[n] = y_pos[n] + t[n] 
+  	
+		#draw square	
+		rect x_pos[n], y_pos[n], x_pos[n]+sizel, y_pos[n]+sizet, red[n], green[n], blue[n], 1
+		
+		#check if we are out of bounds (off the screen)
+		if (x_pos[n] + sizel >= matrix_x)
+			l[n] = -1 * rInt
+		endif
+		if (x_pos[n] <= 0)
+			l[n] = 1 * rInt	
+		endif           
+		if (y_pos[n] + sizet >= matrix_y)
+			t[n] = -1 * rInt
+		endif
+		if (y_pos[n] <= 0)
+			t[n] = 1 * rInt
+		endif
+	next
+end

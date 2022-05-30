@@ -1,0 +1,64 @@
+# Dots & Rings in Jinx!Script
+# (c) 2015 Bob Kojima
+# bob.k.kojima@gmail.com
+
+:init
+
+	config dot_count_x = 10
+	config dot_count_y = 5
+	config pause = 1
+	
+	w = matrix_x
+	h = matrix_y
+	
+	xstep = w / dot_count_x
+	ystep = h / dot_count_y
+	
+	n = 1
+	
+	for i = 1 to dot_count_y step 1
+		for j = 1 to dot_count_x step 1
+			#x position
+			x[n] = j * xstep - xstep/2
+			#y position
+			y[n] = i * ystep - ystep/2
+			#radius
+			r[n] = rnd(3) + 1
+
+			n = n + 1
+		next
+	next
+	
+	time = 0
+end
+
+:render
+
+	# black out screen 
+	clear
+
+	 
+	for i = 1 to dot_count_x * dot_count_y step 1
+  
+		#filled circle
+		circle x[i], y[i], 2, autocolor_red, autocolor_green, autocolor_blue, 1
+    
+		#outer circle   
+		circle x[i], y[i], r[i], autocolor_red, autocolor_green, autocolor_blue, 0
+			
+		if time = pause
+			r[i] = r[i] + 1
+		endif
+  
+		if r[i] > xstep/2
+			r[i] = rnd(3) + 1
+		endif
+	next
+ 	
+		if time = pause
+			time = 0
+ 		else
+ 			time = time + 1
+  	endif
+
+end

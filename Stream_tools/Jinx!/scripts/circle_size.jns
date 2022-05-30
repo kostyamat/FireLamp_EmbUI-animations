@@ -1,0 +1,62 @@
+# Circle Size in Jinx!Script
+# (c) 2015 Bob Kojima
+# bob.k.kojima@gmail.com
+
+# you need to activate the autocolor inside the Jinx!Script channel config !
+
+:init
+	
+	# max number of circles
+	config maxcircles = 10
+
+	#largest radius
+	config radius = 15
+	
+	#pause between steps
+	config pause = 2
+
+	#find center of matrix
+	centerx = matrix_x / 2
+	centery = matrix_y / 2
+
+	nbr_circles = 1
+	i = 0;	
+	step = 1
+	time = 0
+end
+
+:render
+
+	# black out screen 
+	clear
+
+       	# large radius	
+	lg_rad = (matrix_y/2) * .85;
+      	# large circumference
+	lg_circ = 2*3.14*lg_rad;
+	# small radius
+	sm_rad = (lg_circ / nbr_circles) / 2  
+
+	for i = 1 to nbr_circles step 1
+		angle = i*2*3.14/nbr_circles
+  		x = centerx + cos(angle) * lg_rad
+		y = centery + sin(angle) * lg_rad
+		circle x, y, radius, autocolor_red, autocolor_green, autocolor_blue, 1	
+	next
+
+	if time > pause
+		nbr_circles = nbr_circles + step
+		radius = radius - step
+		time = 0
+	endif
+
+	if nbr_circles > maxcircles
+		step = -1
+	endif
+	if nbr_circles < 2
+		step = 1
+	endif
+
+	time = time + 1
+		
+end

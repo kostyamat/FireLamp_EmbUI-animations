@@ -1,0 +1,72 @@
+# Sliding Dots in Jinx!Script
+# based on code writen by wontem  
+# found here http://codepen.io/wontem/pen/KwQbxX
+# translated to Jinx!Script by Bob Kojima
+# bob.k.kojima@gmail.com
+
+:init
+	
+	config radius = 2
+	config frame_count = 20
+	config auto_color = 0
+	
+	w = matrix_x
+	h = matrix_y
+	
+	frame = 0
+	inc = 1
+
+end
+
+:render
+
+	# black out screen 
+	clear
+
+	side = radius * 2
+
+	pointsw = floor(w / side + radius)
+	pointsh = floor(h / side + radius)
+	step = 2 * side
+	
+	for i = 0 to pointsw step 1
+	  for j = 0 to pointsh step 1
+	    x = step * i
+	    y = step * j
+	    reli = i
+	    relj = j
+	    modx = cos(reli / 2) * cos(relj / 2)
+	    mody = sin(reli / 2) * sin(relj / 2)
+	    shiftx = modx * step
+	    shifty = mody * step
+	    
+	    dx = shiftx/frame_count * frame
+	    dy = shifty/frame_count * frame
+	    
+	    
+	    if auto_color = 1
+	    	r = autocolor_red
+				g = autocolor_green
+				b = autocolor_blue
+	    else
+	    	yd = y - (y + shifty - dy)
+				xd = x - (x + shiftx - dx)
+				distance = sqr(xd*xd + yd*yd)
+	    
+	    	hsv2rgb 300 - distance * 40, 255, 255, r, g, b 
+			endif
+
+			circle x + shiftx - dx, y + shifty - dy, radius, r, g, b, 1
+
+	   next
+	next
+		
+	frame = frame + inc
+	if frame = frame_count*2 | frame = 0
+		inc = inc * -1
+
+	endif
+end
+
+
+

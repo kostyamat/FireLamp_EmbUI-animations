@@ -1,0 +1,52 @@
+# Plaid in Jinx!Script
+# (c) 2015 Bob Kojima
+# bob.k.kojima@gmail.com
+
+:init
+
+	config sound = 0
+	config maxwidth = 10
+	config fadeout = 10
+	config pause = 5
+	
+	w = matrix_x
+	h = matrix_y
+	
+	time = 0
+	# store old trigger state
+	trigger_old = 0
+end
+
+:render
+
+	# black out screen 
+	fade fadeout
+
+	r = autocolor_red
+	g = autocolor_green
+	b = autocolor_blue
+
+	if time = pause | (sound && audio_trigger > trigger_old)
+		for i = 0 to 2 step 1
+			n = rnd(w / 2)
+			wd = rnd(maxwidth)		
+			rect n, 0, n-wd, h, r, g, b, 1	
+			rect w-n, 0, w-n-wd, h, r, g, b, 1
+			
+			n = rnd(h / 2)
+			wd = rnd(maxwidth)
+			rect 0, n, w, n+wd, r, g, b, 1	
+			rect 0, h-n, w, h-n+wd, r, g, b, 1
+		next
+	endif
+	
+	if time = pause & sound = 0
+		time = 0
+ 	else
+ 		time = time + 1
+  endif
+			
+	# store trigger state for next frame
+	trigger_old = audio_trigger
+		
+end
